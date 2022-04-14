@@ -3,7 +3,7 @@ import Link from "next/link";
 const Header = () => {
   return (
     <section className="bg-indigo-800 py-4">
-      <header className="container flex justify-between text-white font-semibold font-medium">
+      <header className="container flex justify-between text-white font-medium">
         {/* Logo */}
         <div>
           <Link href="/">
