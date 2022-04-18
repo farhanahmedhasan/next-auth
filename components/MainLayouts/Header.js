@@ -6,7 +6,7 @@ const Header = () => {
       <header className="container flex justify-between text-white font-medium">
         {/* Logo */}
         <div>
-          <Link href="/">
+          <Link passHref href="/">
             <h2 className="font-bold text-2xl cursor-pointer">NavLogo</h2>
           </Link>
         </div>
@@ -19,14 +19,14 @@ const Header = () => {
           </li>
 
           <li>
-            <Link href="/signin">
-              <a>Signin</a>
+            <Link href="/auth">
+              <a>Login</a>
             </Link>
           </li>
 
           <li>
-            <Link href="/signup">
-              <a>Signin</a>
+            <Link href="/logout">
+              <a className="px-3 py-2 border border-white rounded">Logout</a>
             </Link>
           </li>
         </ul>
