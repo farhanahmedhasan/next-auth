@@ -23,27 +23,27 @@ const LoginPage = () => {
   const SubmitPost = async (url, userData) => {
     setMessage("");
     try {
-      const data = await fetch(url, {
+      const res = await fetch(url, {
         method: "POST",
         body: JSON.stringify(userData),
         headers: {
           "Content-type": "application/json",
         },
       });
-      const res = await data.json();
+      const data = await res.json();
 
-      if (res.status === "fail") {
-        console.log(res);
-        if (res.message.includes("email")) {
+      if (data.status === "fail") {
+        console.log(data);
+        if (data.message.includes("email")) {
           return setMessage("This email is already being used");
         }
 
-        if (res.message.includes("password")) {
-          return setMessage(res.message.split(": ")[2]);
+        if (data.message.includes("password")) {
+          return setMessage(data.message.split(": ")[2]);
         }
       }
 
-      setUserInfo(res.data.user);
+      setUserInfo(data.data.user);
     } catch (error) {
       console.log("Sending data Failed");
     }
@@ -69,6 +69,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (userInfo) {
+      console.log(userInfo);
       router.push("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

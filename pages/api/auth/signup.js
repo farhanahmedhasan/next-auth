@@ -2,9 +2,10 @@ import { connectToMongoDB } from "../../../lib/db";
 import User from "../../../models/userModel";
 
 const handler = async (req, res) => {
-  connectToMongoDB();
+  if (req.method !== "POST") return;
 
   try {
+    connectToMongoDB();
     const user = await User.create(req.body);
     user.password = undefined;
     user.__v = undefined;
