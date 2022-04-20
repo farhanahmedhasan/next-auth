@@ -1,20 +1,52 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+
 import Input from "../../components/form/Input";
 import Button from "../../components/ui/Button";
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [message, setMessage] = useState("");
+  const [userInfo, setUserInfo] = useState();
+  const router = useRouter();
 
   const nameRef = useRef();
   const emailRef = useRef();
   const passRef = useRef();
+  const SignupForm = useRef();
 
   const togglForm = () => {
     setIsLogin(!isLogin);
-    emailRef.current.value = null;
-    passRef.current.value = null;
+    SignupForm.reset();
+  };
 
-    if (!isLogin) nameRef.current.value = null;
+  const SubmitPost = async (url, userData) => {
+    setMessage("");
+    try {
+      const data = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(userData),
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+      const res = await data.json();
+
+      if (res.status === "fail") {
+        console.log(res);
+        if (res.message.includes("email")) {
+          return setMessage("This email is already being used");
+        }
+
+        if (res.message.includes("password")) {
+          return setMessage(res.message.split(": ")[2]);
+        }
+      }
+
+      setUserInfo(res.data.user);
+    } catch (error) {
+      console.log("Sending data Failed");
+    }
   };
 
   const submitForm = (e) => {
@@ -26,20 +58,27 @@ const LoginPage = () => {
 
     if (isLogin) {
       const userData = { email, password };
-      console.log(userData);
+      SubmitPost("/api/auth/signin", userData);
     }
 
     if (!isLogin) {
       const userData = { name, email, password };
-      console.log(userData);
+      SubmitPost("/api/auth/signup", userData);
     }
   };
+
+  useEffect(() => {
+    if (userInfo) {
+      router.push("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userInfo]);
 
   return (
     <div className="container">
       <div className="text-white font-ubuntu max-w-lg mx-auto my-16 py-8 px-6 bg-indigo-800 rounded-lg ">
         <h2 className="text-3xl text-center mb-6">{isLogin ? "Login Form" : "SignUp Form"} </h2>
-        <form onSubmit={submitForm}>
+        <form ref={(e) => (SignupForm = e)} onSubmit={submitForm}>
           {!isLogin && <Input forwardRef={nameRef} type="name" label="Your Name" />}
 
           <Input forwardRef={emailRef} type="email" label="Your Email" />

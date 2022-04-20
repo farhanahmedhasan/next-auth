@@ -7,9 +7,11 @@ const handler = async (req, res) => {
   try {
     const user = await User.create(req.body);
     user.password = undefined;
+    user.__v = undefined;
 
     return res.status(201).json({
       status: "success",
+      message: "Account has been created",
       data: {
         user,
       },
